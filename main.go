@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/robertlestak/humun-txwatch/internal/etx"
+	"github.com/robertlestak/txwatch/internal/etx"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/gorilla/mux"

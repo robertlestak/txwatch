@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-IMAGE=registry.lestak.sh/humun-txwatch
+IMAGE=registry.lestak.sh/txwatch
 TAG=$GIT_COMMIT
 
 docker build -f Dockerfile \

@@ -1,4 +1,4 @@
-module github.com/robertlestak/humun-txwatch
+module github.com/robertlestak/txwatch
 
 go 1.17
 
