@@ -1,0 +1,57 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: txwatchdb-v1
+  namespace: nft-dev
+  labels:
+    app: txwatchdb
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: txwatchdb
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: txwatchdb
+        version: v1
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:12
+        resources:
+          limits:
+            memory: 500Mi
+            cpu: 50m
+          requests:
+            memory: 500Mi
+            cpu: 50m
+        ports:
+        - containerPort: 5432
+        envFrom:
+        - secretRef:
+            name: txwatch
+        volumeMounts:
+          - mountPath: "/var/lib/postgresql"
+            name: postgresql
+      volumes:
+        - name: postgresql
+          persistentVolumeClaim:
+            claimName: txwatchdb
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: txwatchdb
+  namespace: nft-dev
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi

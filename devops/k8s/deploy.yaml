@@ -1,0 +1,68 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: txwatch-v1
+  namespace: humun-core-crypto
+  labels:
+    app: txwatch
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: txwatch
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: txwatch
+        version: v1
+    spec:
+      #serviceAccountName: txwatch
+      containers:
+      - name: txwatch
+        image: registry.lestak.sh/humun-txwatch:v0.0.2
+        ports:
+        - containerPort: 80
+          name: http
+        readinessProbe:
+          httpGet:
+            path: /status/healthz
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /status/healthz
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        envFrom:
+        - secretRef:
+            name: txwatch
+        resources:
+          requests:
+            cpu: 1000m
+            memory: 1000Mi
+          limits:
+            cpu: 1000m
+            memory: 1000Mi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: txwatch
+  namespace: humun-core-crypto
+  labels:
+    app: txwatch
+spec:
+  type: ClusterIP
+  selector:
+    app: txwatch
+  ports:
+  - protocol: TCP
+    port: 80
+    name: http
+    targetPort: 80
